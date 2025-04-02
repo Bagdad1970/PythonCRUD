@@ -36,10 +36,10 @@ jobs:
 
       - name: Build container
         run: |
-          docker build -f Dockerfile.dev -t $REPO_NAME:dev .
+          docker build -f Dockerfile.dev -t python-crud:dev .
           echo "Created application container"
 
       - name: Run tests
         run: |
-          docker run --rm --network=host $REPO_NAME:dev
+          docker run --rm --network=host python-crud:dev
           echo "Tests executed"
