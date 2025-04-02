@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest  # Fixed: "ubuntu-latest" instead of "ubuntu:latest"
     env:
       REPO_NAME: ${{ github.event.repository.name }}
 
@@ -19,24 +19,27 @@ jobs:
           POSTGRES_DB: kubsu
           POSTGRES_USER: kubsu
           POSTGRES_PASSWORD: kubsu
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # Removed unnecessary `run`
         with:
           ref: dev
-        run: "Checkout code"
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        run: echo "Setup docker buildx"
+        uses: docker/setup-buildx-action@v3  # Removed unnecessary `run`
 
       - name: Build container
         run: |
           docker build -f Dockerfile.dev -t $REPO_NAME:dev .
-          echo "Creating application container"
+          echo "Created application container"
 
       - name: Run tests
         run: |
           docker run --rm --network=host $REPO_NAME:dev
-          echo "Running tests"
+          echo "Tests executed"
