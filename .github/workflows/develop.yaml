@@ -1,0 +1,27 @@
+name: Developing
+
+on:
+  push:
+    branches: ["dev"]
+
+jobs:
+  test:
+    runs-on: ubuntu:latest
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: dev
+
+      - name: Setup Docker Buildx
+        uses: actions/setup-buildx-action@v3
+
+      - name: Build container
+        run: |
+          docker build -f Dockerfile.dev -t $REPO_NAME:dev .
+
+      - name: Run tests
+        run: docker run --rm $REPO_NAME:dev
