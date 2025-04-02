@@ -37,5 +37,6 @@ jobs:
           echo "Creating application container"
 
       - name: Run tests
-        run: docker run --rm --network=host $REPO_NAME:dev
-        echo "Running tests"
+        run: |
+          docker run --rm --network=host $REPO_NAME:dev
+          echo "Running tests"
