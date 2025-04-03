@@ -25,6 +25,13 @@ jobs:
           docker save -o /tmp/python-crud-prod.tar python-crud:prod
           echo "Save image to tar-archive"
 
+      - name: Verify SSH Host
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@main
         with:
