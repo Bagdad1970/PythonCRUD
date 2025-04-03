@@ -26,13 +26,13 @@ jobs:
           echo "Save image to tar-archive"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.2.2
+        uses: easingthemes/ssh-deploy@main
         with:
-          port: ${{ secrets.SSH_PORT }}
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SCRIPT_AFTER: |
             podman load -i /tmp/python-crud-prod.tar
             podman stop python-crud-prod || true
             podman rm python-crud-prod || true
