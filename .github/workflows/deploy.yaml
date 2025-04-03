@@ -30,9 +30,10 @@ jobs:
         with:
           port: ${{ secrets.SSH_PORT }}
           host: ${{ secrets.SSH_HOST }}
+          password: ${{ secrets.SSH_PASSWORD }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSWORD }}
+          #key: ${{ secrets.SSH_PRIVATE_KEY }}
+          #passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSWORD }}
           script: |
             podman load -i /tmp/python-crud-prod.tar
             podman stop python-crud-prod || true
