@@ -27,15 +27,12 @@ jobs:
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
-        env:
-          IMAGE_PATH: /tmp/python-crud-prod.tar
         with:
           port: ${{ secrets.SSH_PORT }}
           host: ${{ secrets.SSH_HOST }}
-          password: ${{ secrets.SSH_PASSWORD }}
           username: ${{ secrets.SSH_USERNAME }}
-          #key: ${{ secrets.SSH_PRIVATE_KEY }}
-          #passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSWORD }}
           script: |
             podman load -i /tmp/python-crud-prod.tar
             podman stop python-crud-prod || true
@@ -43,5 +40,3 @@ jobs:
             podman rmi python-crud:prod || true
             podman run -d --name python-crud-prod --network host python-crud:prod
             echo "Container has been executed"
-          script_input: |
-            cat ${{ env.IMAGE_PATH }} | ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "cat > /tmp/python-crud-prod.tar && bash -s" < <(echo "$script")
