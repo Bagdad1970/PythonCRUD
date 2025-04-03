@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build container
+        run: |
+          docker build -f Dockerfile.dep -t python-crud:prod .
+          echo "Build container"
+
+      - name: Save image
+        run: |
+          docker save -o /tmp/python-crud-prod.tar python-crud:prod
+          echo "Save image to tar-archive"
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSWORD }}
+          script: |
+            podman load -i /tmp/python-crud-prod.tar
+            podman stop python-crud-prod || true
+            podman rm python-crud-prod || true
+            podman rmi python-crud:prod || true
+            podman run -d --name python-crud-prod python-crud:prod
+            echo "Container has been executed"
+
+
