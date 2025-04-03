@@ -17,7 +17,7 @@ jobs:
 
       - name: Build container
         run: |
-          docker build -f Dockerfile.dep -t python-crud:prod .
+          docker build -f Dockerfile.prod -t python-crud:prod .
           echo "Build container"
 
       - name: Save image
