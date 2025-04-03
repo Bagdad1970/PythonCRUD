@@ -26,7 +26,7 @@ jobs:
           echo "Save image to tar-archive"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.2.2
         with:
           port: ${{ secrets.SSH_PORT }}
           host: ${{ secrets.SSH_HOST }}
