@@ -45,4 +45,3 @@ jobs:
             IMAGE_PATH: /tmp/python-crud-prod.tar
           script_input: |
             cat ${{ env.IMAGE_PATH }} | ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "cat > /tmp/python-crud-prod.tar && bash -s" < <(echo "$script")
-
