@@ -39,3 +39,4 @@ jobs:
             podman rmi python-crud:prod || true
             podman run -d --name python-crud-prod --network host python-crud:prod
             echo "Container has been executed"
+
