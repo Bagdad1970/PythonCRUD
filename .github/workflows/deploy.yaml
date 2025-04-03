@@ -41,5 +41,8 @@ jobs:
             podman rmi python-crud:prod || true
             podman run -d --name python-crud-prod --network host python-crud:prod
             echo "Container has been executed"
-
+          env:
+            IMAGE_PATH: /tmp/python-crud-prod.tar
+          script_input: |
+            cat ${{ env.IMAGE_PATH }} | ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "cat > /tmp/python-crud-prod.tar && bash -s" < <(echo "$script")
 
