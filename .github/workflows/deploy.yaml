@@ -30,16 +30,16 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to server
-        uses: easingthemes/ssh-deploy@main
+        uses: D3rHase/ssh-command-action@latest
         with:
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SCRIPT_AFTER: |
+          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USERNAME }}
+          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command: |
             podman load -i /tmp/python-crud-prod.tar
             podman stop python-crud-prod || true
             podman rm python-crud-prod || true
