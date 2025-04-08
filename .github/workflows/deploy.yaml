@@ -40,10 +40,11 @@ jobs:
           user: ${{ secrets.SSH_USERNAME }}
           private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
-            podman load -i /tmp/python-crud-prod.tar
-            podman stop python-crud-prod || true
-            podman rm python-crud-prod || true
-            podman rmi python-crud:prod || true
-            podman run -d --name python-crud-prod --network host python-crud:prod
-            echo "Container has been executed"
+            #podman load -i /tmp/python-crud-prod.tar
+            #podman stop python-crud-prod || true
+            #podman rm python-crud-prod || true
+            #podman rmi python-crud:prod || true
+            #podman run -d --name python-crud-prod --network host python-crud:prod
+            echo "Hello from server!"
+            #echo "Container has been executed"
 
