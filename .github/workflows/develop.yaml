@@ -21,6 +21,11 @@ jobs:
           docker build -f Dockerfile.dev -t python-crud-dev .
           echo "Created application container"
 
+      - name: Publish container to Docker hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} ${{ secrets.DOCKER_PASSWORD }}
+          docker push python-crud-dev:latest
+
   test:
     needs: build
     runs-on: ubuntu-latest
@@ -42,6 +47,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Pull container
+        run: docker pull python-crud-dev:latest
 
       - name: Run tests
         run: |
