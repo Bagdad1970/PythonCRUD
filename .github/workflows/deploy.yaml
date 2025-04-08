@@ -33,13 +33,14 @@ jobs:
           ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to server
-        uses: D3rHase/ssh-command-action@latest
+        uses: appleboy/ssh-action@v1
         with:
           port: ${{ secrets.SSH_PORT }}
           host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USERNAME }}
-          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command: |
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  
+          debug: true
+          script: |
             #podman load -i /tmp/python-crud-prod.tar
             #podman stop python-crud-prod || true
             #podman rm python-crud-prod || true
