@@ -2,14 +2,28 @@ name: Developing
 
 on:
   push:
-    branches: ["dev"]
+    branches: [ "dev" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest  # Fixed: "ubuntu-latest" instead of "ubuntu:latest"
-    env:
-      REPO_NAME: ${{ github.event.repository.name }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: dev
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build container
+        run: |
+          docker build -f Dockerfile.dev -t python-crud-dev .
+          echo "Created application container"
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:15-alpine
@@ -25,21 +39,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # Removed unnecessary `run`
-        with:
-          ref: dev
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3  # Removed unnecessary `run`
-
-      - name: Build container
-        run: |
-          docker build -f Dockerfile.dev -t python-crud:dev .
-          echo "Created application container"
-
+      steps:
       - name: Run tests
         run: |
-          docker run --rm --network=host python-crud:dev
+          docker run --rm --network=host python-crud-dev
           echo "Tests executed"
