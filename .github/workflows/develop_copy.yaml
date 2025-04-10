@@ -1,0 +1,57 @@
+name: Developing
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build container
+        run: |
+          docker build -f Dockerfile.dev -t python-crud-dev .
+          echo "Created application container"
+
+      #- name: Publish container to Docker hub
+      #  run: |
+      #    docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #    docker push ${{ secrets.DOCKER_USERNAME }}/python-crud-dev:latest
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: kubsu
+          POSTGRES_USER: kubsu
+          POSTGRES_PASSWORD: kubsu
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull container
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/python-crud-dev:latest
+
+      - name: Run tests
+        run: |
+          docker run --rm --network=host python-crud-dev
+          echo "Tests executed"
