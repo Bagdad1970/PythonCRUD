@@ -4,6 +4,7 @@ from sqlalchemy.future import select
 from src import models, schemas
 from src.database import init_db, get_db
 
+
 app = FastAPI()
 
 
