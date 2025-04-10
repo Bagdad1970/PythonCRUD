@@ -25,12 +25,12 @@ jobs:
           docker save -o /tmp/python-crud-prod.tar python-crud:prod
           echo "Save image to tar-archive"
 
-      - name: Verify SSH Host
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      #- name: Verify SSH Host
+      #  run: |
+      #    mkdir -p ~/.ssh
+      #    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #    chmod 600 ~/.ssh/id_rsa
+      #    ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
