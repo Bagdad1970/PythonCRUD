@@ -38,7 +38,7 @@ jobs:
           push: false
           context: .
           file: ./Dockerfile.dev
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/python-crud-dev:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/python-crud-dev:latest
 
       - name: Run tests
         run: |
