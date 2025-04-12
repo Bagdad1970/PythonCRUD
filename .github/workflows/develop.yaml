@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm --network=host python-crud-dev
+          docker run --rm --network=host ${{ vars.DOCKERHUB_USERNAME }}/python-crud-dev:latest
 
   push:
     needs: test
