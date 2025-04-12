@@ -35,10 +35,10 @@ jobs:
       - name: Build container
         uses: docker/build-push-action@v3
         with:
-          push: false
           context: .
           file: ./Dockerfile.dev
           tags: ${{ vars.DOCKERHUB_USERNAME }}/python-crud-dev:latest
+          load: true
 
       - name: Run tests
         run: |
