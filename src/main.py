@@ -36,7 +36,7 @@ async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(models.User).where(models.User.id == user_id))
     user = result.scalar_one_or_none()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="This user not found")
     return user
 
 
