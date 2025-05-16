@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - name: Checkout code
@@ -28,3 +28,27 @@ jobs:
           file: Dockerfile.prod
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/python-crud-prod:latest
+
+      - name: Deploy to on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            podman login -u ${{ vars.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }} docker.io
+
+            # Stop and remove existing container if it exists
+            podman stop python-crud-prod || true
+            podman rm python-crud-prod || true
+
+            # Remove existing image if it exists
+            podman rmi ${{ vars.DOCKERHUB_USERNAME }}/python-crud-prod:latest || true
+
+            # Pull new image from Docker Hub
+            podman pull ${{ vars.DOCKERHUB_USERNAME }}/python-crud-prod:latest
+
+            # Run new container
+            podman run -d --name python-crud-prod --network host ${{ vars.DOCKERHUB_USERNAME }}/python-crud-prod:latest
+            echo "Container has been deployed successfully!"
